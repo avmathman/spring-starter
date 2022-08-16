@@ -3,4 +3,4 @@
  *
  * @author avakhobov
  */
-package com.relativity.springstarter.starter.persistence.user;
+package com.relativity.springstarter.starter.repositories.user;

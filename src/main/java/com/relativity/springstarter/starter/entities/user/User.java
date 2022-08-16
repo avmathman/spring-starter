@@ -1,7 +1,7 @@
-package com.relativity.springstarter.starter.persistence.user.entity;
+package com.relativity.springstarter.starter.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.relativity.springstarter.starter.persistence.AbstractGenericEntity;
+import com.relativity.springstarter.starter.entities.AbstractGenericEntity;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,6 +38,38 @@ public class User extends AbstractGenericEntity {
      * Password maximum length.
      */
     public static final int MAX_LENGTH_PASSWORD = 512;
+
+    /**
+     * Get a new {@link UserBuilder}.
+     *
+     * @return a new {@link UserBuilder}.
+     */
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
+
+    /**
+     * Get a new {@link UserBuilder}.
+     *
+     * @param username the user name of the user being built.
+     *
+     * @return a new {@link UserBuilder}.
+     */
+    public static UserBuilder builder(final String username) {
+        return new UserBuilder(username);
+    }
+
+    /**
+     * Get a new {@link UserBuilder}.
+     *
+     * @param username the user name of the user being built.
+     * @param email the email of the user being built.
+     *
+     * @return a new {@link UserBuilder}.
+     */
+    public static UserBuilder builder(final String username, final String email) {
+        return new UserBuilder(username, email);
+    }
 
     /**
      * The user's firstname name.
@@ -339,4 +371,132 @@ public class User extends AbstractGenericEntity {
             entity.setOwner(null);
         }
     }
+
+    /**
+     * A functional programming user builder.
+     *
+     * @author avakhobov
+     */
+    public static class UserBuilder extends AbstractGenericEntity.Builder<User> {
+
+        /**
+         * Create a {@link UserBuilder}.
+         *
+         */
+        private UserBuilder() {
+            super();
+        }
+
+        /**
+         * Create a {@link UserBuilder}.
+         *
+         * @param username the user name of the user being built.
+         */
+        private UserBuilder(final String username) {
+            this();
+            this.username(username);
+        }
+
+        /**
+         * Create a {@link UserBuilder}.
+         *
+         * @param username the user name of the user being built.
+         * @param email the email of the user being built.
+         */
+        private UserBuilder(final String username, final String email) {
+            this();
+            this.username(username);
+            this.email(email);
+        }
+
+        @Override
+        protected final User buildEntity() {
+            return new User();
+        }
+
+        /**
+         * Set the user name and return the builder.
+         *
+         * @see User#setUsername(String)
+         *
+         * @param username the user name of the user being built.
+         *
+         * @return the builder.
+         */
+        public UserBuilder username(final String username) {
+            this.getEntity().setUsername(username);
+            return this;
+        }
+
+        /**
+         * Set the user email and return the builder.
+         *
+         * @see User#setEmail(String)
+         *
+         * @param email the email of the user being built.
+         *
+         * @return the builder.
+         */
+        public UserBuilder email(final String email) {
+            this.getEntity().setEmail(email);
+            return this;
+        }
+
+        /**
+         * Hash and set the user password of the user who created the entity and return the builder.
+         *
+         * @see User#setPassword(char...)
+         *
+         * @param password the clear password to hash and set for the user being built.
+         *
+         * @return the builder.
+         */
+        public UserBuilder password(final char... password) {
+            this.getEntity().setPassword(password);
+            return this;
+        }
+
+        /**
+         * Set the user password of the user who created the entity and return the builder.
+         *
+         * @see User#setPassword(String)
+         *
+         * @param password the password of the user being built.
+         *
+         * @return the builder.
+         */
+        public UserBuilder password(final String password) {
+            this.getEntity().setPassword(password);
+            return this;
+        }
+
+        /**
+         * Set the user active status and return the builder.
+         *
+         * @see User#setEnabled(boolean)
+         *
+         * @param enabled the active status of the user being built.
+         *
+         * @return the builder.
+         */
+        public UserBuilder enabled(final boolean enabled) {
+            this.getEntity().setEnabled(enabled);
+            return this;
+        }
+
+        /**
+         * Set the user verified status and return the builder.
+         *
+         * @see User#setVerified(boolean)
+         *
+         * @param verified the verified status of the user being built.
+         *
+         * @return the builder.
+         */
+        public UserBuilder verified(final boolean verified) {
+            this.getEntity().setVerified(verified);
+            return this;
+        }
+    }
+
 }

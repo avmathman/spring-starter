@@ -1,0 +1,445 @@
+package com.relativity.springstarter.starter.services;
+
+import com.relativity.springstarter.starter.dtos.AbstractGenericDto;
+import com.relativity.springstarter.starter.entities.AbstractGenericEntity;
+import com.relativity.springstarter.starter.entities.user.User;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Generic Service interface.
+ *
+ * @param <T> the entity type used to manage data in persistence storage.
+ * @param <D> the DTO type to convert entities to/from.
+ *
+ * @author avakhobov
+ */
+public interface GenericService<T extends AbstractGenericEntity, D extends AbstractGenericDto> {
+
+    /**
+     * Get a bridge to convert this DTO to an entity and vice versa.
+     *
+     * @return a bridge to convert this DTO to an entity and vice versa.
+     */
+    AbstractGenericBridge<T, D> getBridge();
+
+    /**
+     * Convert a DTO to an entity matching the data of the given DTO.
+     *
+     * <p>
+     * This method is simply an alias to {@link AbstractGenericBridge#toEntity(AbstractGenericDto)}.
+     * </p>
+     *
+     * @param dto the DTO convert to an entity.
+     *
+     * @return an entity matching the data of the given DTO.
+     *
+     * @throws NullPointerException if {@code dto} is {@code null}, or if
+     *         {@link AbstractGenericBridge#buildEntity()} returned {@code null}.
+     */
+    default T toEntity(final D dto) {
+        return this.getBridge().toEntity(dto);
+    }
+
+    /**
+     * Convert a DTO List to an entity Collection matching the data of the given DTOs.
+     *
+     * <p>
+     * This method is simply an alias to {@link AbstractGenericBridge#toEntity(Collection)}.
+     * </p>
+     *
+     * @param dtos the DTOs to convert to entities.
+     *
+     * @return entities matching the data of the given DTO.
+     *
+     * @throws NullPointerException if {@code dtos} is {@code null}, contains {@code null}, or if
+     *         {@link AbstractGenericBridge#buildEntity()} returned {@code null}.
+     */
+    default List<T> toEntity(final Collection<D> dtos) {
+        return this.getBridge().toEntity(dtos);
+    }
+
+    /**
+     * Convert an entity to a DTO matching the data of the given entity.
+     *
+     * <p>
+     * This method is simply an alias to {@link AbstractGenericBridge#toDto(AbstractGenericEntity)}.
+     * </p>
+     *
+     * @param entity the entity convert to an DTO.
+     *
+     * @return a DTO matching the data of the given entity.
+     *
+     * @throws NullPointerException if {@code entity} is {@code null}, or if
+     *         {@link AbstractGenericBridge#buildDto()} returned {@code null}.
+     */
+    default D toDto(final T entity) {
+        return this.getBridge().toDto(entity);
+    }
+
+    /**
+     * Convert entities to a DTO List matching the data of the given entities.
+     *
+     * <p>
+     * This method is simply an alias to {@link AbstractGenericBridge#toDto(Collection)}.
+     * </p>
+     *
+     * @param entities the entities to convert to an DTO.
+     *
+     * @return a DTO Collection matching the data of the given entities.
+     *
+     * @throws NullPointerException if {@code entity} is {@code null}, contains {@code null}, or if
+     *         {@link AbstractGenericBridge#buildDto()} returned {@code null}.
+     */
+    default List<D> toDto(final Collection<T> entities) {
+        return this.getBridge().toDto(entities);
+    }
+
+
+
+    /**
+     * Find all entities.
+     *
+     * @return the list of all the entities available through the service.
+     */
+    List<T> findAll();
+
+    /**
+     * Returns all entities sorted by the given options.
+     *
+     * @param sort sort conditions
+     * @return all entities sorted by the given options
+     */
+    List<T> findAll(Sort sort);
+
+    /**
+     * Returns a {@link Page} of entities meeting the paging restriction provided in the
+     * {@code Pageable} object.
+     *
+     * @param pageable paging conditions
+     *
+     * @return a page of entities
+     */
+    Page<T> findAll(Pageable pageable);
+
+    /**
+     * Returns a {@link Page} of entities meeting the paging restriction. Pages are zero indexed, thus
+     * providing 0 for {@code page} will return the first page.
+     *
+     * @param page zero-based page index.
+     * @param size the size of the page to be returned.
+     *
+     * @return a page of entities
+     */
+    default Page<T> findAll(int page, int size) {
+        return this.findAll(page, size, null);
+    }
+
+    /**
+     * Returns a {@link Page} of entities meeting the paging restriction with sort parameters applied.
+     * Pages are zero indexed, thus providing 0 for {@code page} will return the first page.
+     *
+     * @param page zero-based page index.
+     * @param size the size of the page to be returned.
+     * @param sort can be {@literal null}.
+     *
+     * @return a page of entities
+     */
+    default Page<T> findAll(int page, int size, Sort sort) {
+        final Pageable pageable = PageRequest.of(page, size, sort);
+
+        return this.findAll(pageable);
+    }
+
+
+    /**
+     * Find all entities from the repository owned by user.
+     *
+     * @param owner the entities owner.
+     *
+     * @return the list of all the entities available through the repository.
+     */
+    List<T> findAllByOwner(final User owner);
+
+    /**
+     * Returns all entities owned by user sorted by the given options.
+     *
+     * @param sort sort conditions.
+     * @param owner the entities owner.
+     *
+     * @return all entities sorted by the given options
+     */
+    List<T> findAllByOwner(Sort sort, final User owner);
+
+    /**
+     * Returns a {@link Page} of entities owned by user meeting the paging restriction provided in the
+     * {@code Pageable} object.
+     *
+     * @param pageable paging conditions.
+     * @param owner the entities owner.
+     *
+     * @return a page of entities
+     */
+    Page<T> findAllByOwner(Pageable pageable, final User owner);
+
+    /**
+     * Returns a {@link Page} of entities owned by user meeting the paging restriction. Pages are zero
+     * indexed, thus providing 0 for {@code page} will return the first page.
+     *
+     * @param page zero-based page index.
+     * @param size the size of the page to be returned.
+     * @param owner the entities owner.
+     *
+     * @return a page of entities
+     */
+    default Page<T> findAllByOwner(int page, int size, final User owner) {
+        return this.findAllByOwner(page, size, null, owner);
+    }
+
+    /**
+     * Returns a {@link Page} of entities meeting owned by user the paging restriction with sort
+     * parameters applied. Pages are zero indexed, thus providing 0 for {@code page} will return the
+     * first page.
+     *
+     * @param page zero-based page index.
+     * @param size the size of the page to be returned.
+     * @param sort can be {@literal null}.
+     * @param owner the entities owner.
+     *
+     * @return a page of entities
+     */
+    default Page<T> findAllByOwner(int page, int size, Sort sort, final User owner) {
+        final Pageable pageable = PageRequest.of(page, size, sort);
+
+        return this.findAllByOwner(pageable, owner);
+    }
+
+    /**
+     * Find all entities from the repository owned by user.
+     *
+     * @param ownerId the entity identifier of the entity owner.
+     *
+     * @return the list of all the entities available through the repository.
+     */
+    default List<T> findAllByOwner(final UUID ownerId) {
+        final User owner = new User();
+        owner.setId(ownerId);
+        return this.findAllByOwner(owner);
+    }
+
+    /**
+     * Returns all entities owned by user sorted by the given options.
+     *
+     * @param sort sort conditions.
+     * @param ownerId the entity identifier of the entity owner.
+     *
+     * @return all entities sorted by the given options
+     */
+    default List<T> findAllByOwner(Sort sort, final UUID ownerId) {
+        final User owner = new User();
+        owner.setId(ownerId);
+        return this.findAllByOwner(sort, owner);
+    }
+
+    /**
+     * Returns a {@link Page} of entities owned by user meeting the paging restriction provided in the
+     * {@code Pageable} object.
+     *
+     * @param pageable paging conditions.
+     * @param ownerId the entity identifier of the entity owner.
+     *
+     * @return a page of entities
+     */
+    default Page<T> findAllByOwner(Pageable pageable, final UUID ownerId) {
+        final User owner = new User();
+        owner.setId(ownerId);
+        return this.findAllByOwner(pageable, owner);
+    }
+
+    /**
+     * Returns a {@link Page} of entities owned by user meeting the paging restriction. Pages are zero
+     * indexed, thus providing 0 for {@code page} will return the first page.
+     *
+     * @param page zero-based page index.
+     * @param size the size of the page to be returned.
+     * @param ownerId the entity identifier of the entity owner.
+     *
+     * @return a page of entities
+     */
+    default Page<T> findAllByOwner(int page, int size, final UUID ownerId) {
+        final User owner = new User();
+        owner.setId(ownerId);
+        return this.findAllByOwner(page, size, null, owner);
+    }
+
+    /**
+     * Returns a {@link Page} of entities meeting owned by user the paging restriction with sort
+     * parameters applied. Pages are zero indexed, thus providing 0 for {@code page} will return the
+     * first page.
+     *
+     * @param page zero-based page index.
+     * @param size the size of the page to be returned.
+     * @param sort can be {@literal null}.
+     * @param ownerId the entity identifier of the entity owner.
+     *
+     * @return a page of entities
+     */
+    default Page<T> findAllByOwner(int page, int size, Sort sort, final UUID ownerId) {
+        final User owner = new User();
+        owner.setId(ownerId);
+        return this.findAllByOwner(page, size, null, owner);
+    }
+
+
+
+    /**
+     * Find an entity through its primary key.
+     *
+     * @param entityId the entity unique identifier.
+     *
+     * @return the entity matching the identifier, or {@code null} if none matches.
+     */
+    T findById(UUID entityId);
+
+    /**
+     * Find an entity through its primary key and owner id.
+     *
+     * @param entityId the entity unique identifier.
+     * @param ownerId the entity identifier of the entity owner.
+     *
+     * @return the entity matching the identifier and owner, or {@code null} if none matches.
+     */
+    default T findByIdAndOwner(final UUID entityId, final UUID ownerId) {
+        final User owner = new User();
+        owner.setId(ownerId);
+        return this.findByIdAndOwner(entityId, owner);
+    }
+
+    /**
+     * Find an entity through its primary key and owner.
+     *
+     * @param entityId the entity unique identifier.
+     * @param owner the entity owner.
+     *
+     * @return the entity matching the identifier and owner, or {@code null} if none matches.
+     */
+    T findByIdAndOwner(final UUID entityId, final User owner);
+
+    /**
+     * Add an entity.
+     *
+     * @param entity an entity to add.
+     *
+     * @return {@code true} if the entity was added, {@code false} otherwise.
+     */
+    boolean add(T entity);
+
+    /**
+     * Update an entity through the repository.
+     *
+     * @param entity the reference entity used for the update.
+     *
+     * @return the updated entity.
+     *
+     * @throws EntityNotFoundException if no entity matches the reference entity in the repository.
+     * @throws NullPointerException if the {@code entity} is {@code null}.
+     */
+    T update(T entity);
+
+    /**
+     * Update an entity through the repository only if owned by given owner id.
+     *
+     * <p>
+     * Secure method to ensure you only update if you own the data by providing the authenticated user
+     * unique id as owner. {@link #update(AbstractGenericEntity)} should be used instead of
+     * authenticated user has administration permissions.
+     * </p>
+     *
+     * @param entity the reference entity used for the update.
+     * @param ownerId the entity identifier of the entity owner.
+     *
+     * @return the updated entity, {@code null} if entity was not found in persistence layer.
+     *
+     * @throws EntityNotFoundException if no entity matches the entity identifier in the repository.
+     * @throws NullPointerException if the {@code entity} is {@code null}.
+     */
+    default T updateByOwner(final T entity, final UUID ownerId) {
+        final User owner = new User();
+        owner.setId(ownerId);
+
+        return this.updateByOwner(entity, owner);
+    }
+
+    /**
+     * Update an entity through the repository only if owned by given owner.
+     *
+     * <p>
+     * Secure method to ensure you only update if you own the data by providing the authenticated user
+     * as owner. {@link #update(AbstractGenericEntity)} should be used instead if authenticated user
+     * has administration permissions.
+     * </p>
+     *
+     * @param entity the reference entity used for the update.
+     * @param owner the entity owner.
+     *
+     * @return the updated entity, {@code null} if entity was not found in persistence layer.
+     *
+     * @throws EntityNotFoundException if no entity matches the entity identifier in the repository.
+     * @throws NullPointerException if the {@code entity} is {@code null}.
+     */
+    T updateByOwner(final T entity, final User owner);
+
+    /**
+     * Delete an entity.
+     *
+     * @param entityId the unique identifier of the entity to delete.
+     *
+     * @throws EntityNotFoundException if no entity matches the entity identifier in the repository.
+     */
+    void deleteById(UUID entityId);
+
+    /**
+     * Delete an entity through the repository only if owned by given owner id.
+     *
+     * <p>
+     * Secure method to ensure you only delete if you own the data by providing the authenticated user
+     * unique id as owner. {@link #deleteById(UUID)} should be used instead if authenticated user has
+     * administration permissions.
+     * </p>
+     *
+     * @param entityId the entity identifier of the entity to delete.
+     * @param ownerId the entity identifier of the entity owner.
+     *
+     * @throws EntityNotFoundException if no entity matches the entity identifier in the repository.
+     */
+    default void deleteByIdAndOwner(final UUID entityId, final UUID ownerId) {
+        final User owner = new User();
+        owner.setId(ownerId);
+
+        this.deleteByIdAndOwner(entityId, owner);
+    }
+
+    /**
+     * Delete an entity through the repository only if owned by given owner.
+     *
+     * <p>
+     * Secure method to ensure you only delete if you own the data by providing the authenticated user
+     * as owner. {@link #deleteById(UUID)} should be used instead if authenticated user has
+     * administration permissions.
+     * </p>
+     *
+     * @param entityId the entity identifier of the entity to delete.
+     * @param owner the entity owner.
+     *
+     * @throws EntityNotFoundException if no entity matches the entity identifier in the repository.
+     */
+    void deleteByIdAndOwner(final UUID entityId, final User owner);
+
+}

@@ -1,7 +1,7 @@
-package com.relativity.springstarter.starter.persistence.user.dao;
+package com.relativity.springstarter.starter.repositories.user;
 
-import com.relativity.springstarter.starter.persistence.GenericRepository;
-import com.relativity.springstarter.starter.persistence.user.entity.User;
+import com.relativity.springstarter.starter.repositories.GenericRepository;
+import com.relativity.springstarter.starter.entities.user.User;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

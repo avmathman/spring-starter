@@ -1,9 +1,9 @@
-package com.relativity.springstarter.starter.persistence;
+package com.relativity.springstarter.starter.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.relativity.springstarter.starter.persistence.user.entity.User;
+import com.relativity.springstarter.starter.entities.user.User;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -37,7 +37,7 @@ import javax.persistence.PreUpdate;
  * Javassist Lazy Loaded proxies will not be able override them.
  * </p>
  *
- * @author madmath03
+ * @author avakhobov
  */
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @MappedSuperclass
@@ -358,5 +358,136 @@ public abstract class AbstractGenericEntity {
     @PreUpdate
     protected void preUpdate() {
         this.modifiedAt = new Date();
+    }
+
+    /**
+     * A functional programming entity builder.
+     *
+     * @param <T> the type of entity being built.
+     *
+     * @author avakhobov
+     */
+    public abstract static class Builder<T extends AbstractGenericEntity> {
+
+        /**
+         * The entity currently being built.
+         */
+        private final T entity;
+
+        /**
+         * Create a {@link Builder} with no initial property.
+         */
+        public Builder() {
+            this.entity = this.buildEntity();
+        }
+
+        /**
+         * Construct an entity to build.
+         *
+         * @return an entity for build.
+         */
+        protected abstract T buildEntity();
+
+        /**
+         * Get the {@link #entity}.
+         *
+         * @return the {@link #entity}.
+         */
+        protected final T getEntity() {
+            return entity;
+        }
+
+        /**
+         * Build the entity prepared by the builder.
+         *
+         * @return a new entity as prepared by the builder.
+         */
+        public T build() {
+            return entity;
+        }
+
+        /**
+         * Set the entity id and return the builder.
+         *
+         * @see AbstractGenericEntity#setId(UUID)
+         *
+         * @param id the id of the entity being built.
+         *
+         * @return the builder.
+         */
+        public Builder<T> id(final UUID id) {
+            entity.setId(id);
+            return this;
+        }
+
+        /**
+         * Set the entity id and return the builder.
+         *
+         * @see AbstractGenericEntity#setCreatedAt(Date)
+         *
+         * @param date the creation date of the entity being built.
+         *
+         * @return the builder.
+         */
+        public Builder<T> createdAt(final Date date) {
+            entity.setCreatedAt(date);
+            return this;
+        }
+
+        /**
+         * Set the entity id of the user who created the entity and return the builder.
+         *
+         * @see AbstractGenericEntity#setCreatedBy(User)
+         *
+         * @param user the user who created the entity of the entity being built.
+         *
+         * @return the builder.
+         */
+        public Builder<T> createdBy(final User user) {
+            entity.setCreatedBy(user);
+            return this;
+        }
+
+        /**
+         * Set the entity last modification date and return the builder.
+         *
+         * @see AbstractGenericEntity#setModifiedBy(User)
+         *
+         * @param date the last modification date of the entity being built.
+         *
+         * @return the builder.
+         */
+        public Builder<T> modifiedAt(final Date date) {
+            entity.setModifiedAt(date);
+            return this;
+        }
+
+        /**
+         * Set the entity id of the user who did the last modification and return the builder.
+         *
+         * @see AbstractGenericEntity#setModifiedBy(User)
+         *
+         * @param user the user who did the last modification of the entity being built.
+         *
+         * @return the builder.
+         */
+        public Builder<T> modifiedBy(final User user) {
+            entity.setModifiedBy(user);
+            return this;
+        }
+
+        /**
+         * Set the entity owner's id and return the builder.
+         *
+         * @see AbstractGenericEntity#setOwner(User)
+         *
+         * @param user the owner of the entity being built.
+         *
+         * @return the builder.
+         */
+        public Builder<T> owner(final User user) {
+            entity.setOwner(user);
+            return this;
+        }
     }
 }

@@ -1,6 +1,7 @@
-package com.relativity.springstarter.starter.persistence;
+package com.relativity.springstarter.starter.repositories;
 
-import com.relativity.springstarter.starter.persistence.user.entity.User;
+import com.relativity.springstarter.starter.entities.AbstractGenericEntity;
+import com.relativity.springstarter.starter.entities.user.User;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
