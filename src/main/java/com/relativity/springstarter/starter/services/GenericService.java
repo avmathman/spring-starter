@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -306,7 +307,7 @@ public interface GenericService<T extends AbstractGenericEntity, D extends Abstr
      *
      * @return the entity matching the identifier, or {@code null} if none matches.
      */
-    T findById(UUID entityId);
+    Optional<T> findById(UUID entityId);
 
     /**
      * Find an entity through its primary key and owner id.

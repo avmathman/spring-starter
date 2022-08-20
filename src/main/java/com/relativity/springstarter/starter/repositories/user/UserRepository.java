@@ -1,7 +1,7 @@
 package com.relativity.springstarter.starter.repositories.user;
 
-import com.relativity.springstarter.starter.repositories.GenericRepository;
 import com.relativity.springstarter.starter.entities.user.User;
+import com.relativity.springstarter.starter.repositories.GenericRepository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

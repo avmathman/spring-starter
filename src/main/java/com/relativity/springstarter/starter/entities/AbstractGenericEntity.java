@@ -117,8 +117,7 @@ public abstract class AbstractGenericEntity {
     /**
      * An auto-populating date/time stamp of when the record was created.
      */
-    @Column(name = CREATED_AT_PROPERTY, columnDefinition = "TIMESTAMP", nullable = false,
-            updatable = false)
+    @Column(name = CREATED_AT_PROPERTY, columnDefinition = "TIMESTAMP", nullable = false, updatable = false)
     @CreatedDate
     private Date createdAt;
 
@@ -137,8 +136,7 @@ public abstract class AbstractGenericEntity {
     /**
      * An auto-populating date/time stamp of when the record was last modified.
      */
-    @Column(name = MODIFIED_AT_PROPERTY, columnDefinition = "TIMESTAMP", nullable = true,
-            insertable = false)
+    @Column(name = MODIFIED_AT_PROPERTY, columnDefinition = "TIMESTAMP", nullable = true, insertable = false)
     @LastModifiedDate
     private Date modifiedAt = null;
 
@@ -324,20 +322,16 @@ public abstract class AbstractGenericEntity {
 
     @Override
     public boolean equals(final Object obj) {
-        final boolean equals;
-
         if (this == obj) {
-            equals = true;
+            return true;
         } else if (obj == null) {
-            equals = false;
+            return false;
         } else if (!(obj instanceof AbstractGenericEntity)) {
-            equals = false;
+            return false;
         } else {
             final AbstractGenericEntity other = (AbstractGenericEntity) obj;
-            equals = Objects.equals(getId(), other.getId());
+            return Objects.equals(getId(), other.getId());
         }
-
-        return equals;
     }
 
     @Override

@@ -3,6 +3,10 @@ package com.relativity.springstarter.starter.repositories;
 import com.relativity.springstarter.starter.entities.AbstractGenericEntity;
 import com.relativity.springstarter.starter.entities.user.User;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,10 +15,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 /**
  * Generic Repository interface.
  *
@@ -22,7 +22,6 @@ import java.util.UUID;
  */
 @NoRepositoryBean
 public interface GenericRepository<T extends AbstractGenericEntity> extends JpaRepository<T, UUID> {
-
     /**
      * Find all entities from the repository.
      *
@@ -171,16 +170,16 @@ public interface GenericRepository<T extends AbstractGenericEntity> extends JpaR
      *
      * @param entityId the entity identifier of the entity to delete.
      *
-     * @throws IllegalArgumentException in case UUID is {@code null}.
+     * @return the number of deleted entities.
      */
-    void deleteById(final UUID entityId);
+    Integer deleteByUserId(final UUID entityId);
 
     /**
      * Delete an entity through the repository only if owned by given owner id.
      *
      * <p>
      * Secure method to ensure you only delete if you own the data by providing the authenticated user
-     * as owner. {@link #deleteById(UUID)} should be used instead if authenticated user has
+     * as owner. {@link #deleteByUserId(UUID)} should be used instead if authenticated user has
      * administration permissions.
      * </p>
      *
@@ -200,4 +199,5 @@ public interface GenericRepository<T extends AbstractGenericEntity> extends JpaR
      */
     @Transactional(readOnly = true)
     boolean exists(final UUID entityId);
+
 }

@@ -179,7 +179,7 @@ public abstract class AbstractGenericController<T extends AbstractGenericEntity,
         final UUID uniqueId = UUID.fromString(id);
 
         // Search entity
-        final T entity = this.service.findById(uniqueId);
+        final T entity = this.service.findById(uniqueId).orElse(null);
         if (entity == null) {
             throw this.buildEntityNotFoundException(id, request);
         }
