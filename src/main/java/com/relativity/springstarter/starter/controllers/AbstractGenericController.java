@@ -100,6 +100,15 @@ public abstract class AbstractGenericController<T extends AbstractGenericEntity,
     }
 
     /**
+     * Get the {@link #messageSource}.
+     *
+     * @return the {@link #messageSource}.
+     */
+    protected final MessageSource getMessageSource() {
+        return messageSource;
+    }
+
+    /**
      * Get the {@link #service}.
      *
      * @return the {@link #service}.
