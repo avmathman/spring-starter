@@ -210,19 +210,20 @@ public abstract class AbstractGenericController<T extends AbstractGenericEntity,
      */
     protected abstract EntityNotFoundException buildEntityNotFoundException(String id, WebRequest request);
 
-
     /**
      * Sort query separator for properties.
      *
      * @see AbstractGenericController#constructSortOrders(String)
      */
     public static final String SORT_PROP_SEP = ";";
+
     /**
      * Sort query separator for property options.
      *
      * @see AbstractGenericController#constructSortOrders(String)
      */
     public static final String SORT_OPT_SEP = ",";
+
     /**
      * Default sort applied in listing functions when none provided.
      */
@@ -365,8 +366,6 @@ public abstract class AbstractGenericController<T extends AbstractGenericEntity,
         return service.toDto(result);
     }
 
-
-
     /**
      * Get all available {@link T} entities paginated.
      *
@@ -499,10 +498,14 @@ public abstract class AbstractGenericController<T extends AbstractGenericEntity,
      *
      *         </ul>
      */
-    public ResponseEntity<D> addData(@RequestBody D dto, UriComponentsBuilder builder, HttpServletResponse response) {
+    public ResponseEntity<D> addData(
+            @RequestBody D dto,
+            UriComponentsBuilder builder,
+            HttpServletResponse response
+    ) {
         final T entity = this.addEntity(dto);
-
         final ResponseEntity<D> responseEntity;
+
         if (entity != null) {
             final HttpHeaders headers = new HttpHeaders();
             headers.setLocation(
@@ -526,29 +529,15 @@ public abstract class AbstractGenericController<T extends AbstractGenericEntity,
      */
     protected D addData(@RequestBody D dto) {
         final T entity = this.addEntity(dto);
-
-        final D responseDto;
-        if (entity != null) {
-            responseDto = this.service.toDto(entity);
-        } else {
-            responseDto = null;
-        }
+        final D responseDto = entity != null ? this.service.toDto(entity) : null;
 
         return responseDto;
     }
 
     private T addEntity(@RequestBody D dto) {
-
         final T entity = this.service.toEntity(dto);
-
         final boolean added = service.add(entity);
-
-        final T response;
-        if (added) {
-            response = entity;
-        } else {
-            response = null;
-        }
+        final T response = added ? entity : null;
 
         return response;
     }
@@ -700,13 +689,8 @@ public abstract class AbstractGenericController<T extends AbstractGenericEntity,
         // Convert ID
         final UUID uniqueId = UUID.fromString(id);
 
-        HttpStatus status;
         final boolean deleted = this.deleteDataById(uniqueId);
-        if (deleted) {
-            status = HttpStatus.NO_CONTENT;
-        } else {
-            status = HttpStatus.NOT_FOUND;
-        }
+        final HttpStatus status = deleted ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND;
 
         return new ResponseEntity<>(status);
     }
@@ -759,24 +743,21 @@ public abstract class AbstractGenericController<T extends AbstractGenericEntity,
      *         </ul>
      */
     public ResponseEntity<Void> deleteAllData(String ids) {
+
         // Convert IDs
         final String[] idArray = ids.split(",");
         final List<UUID> uniqueIds = new ArrayList<>(idArray.length);
+
         for (String id : idArray) {
             try {
                 uniqueIds.add(UUID.fromString(id));
             } catch (IllegalArgumentException e) {
-                LOG.debug("invalid id=" + id, e);
+                LOG.debug("Invalid id = " + id, e);
             }
         }
 
-        HttpStatus status;
         final boolean deleted = this.deleteAllDataById(uniqueIds);
-        if (deleted) {
-            status = HttpStatus.NO_CONTENT;
-        } else {
-            status = HttpStatus.CONFLICT;
-        }
+        final HttpStatus status = deleted ? HttpStatus.NO_CONTENT : HttpStatus.CONFLICT;
 
         return new ResponseEntity<>(status);
     }

@@ -103,8 +103,6 @@ public interface GenericService<T extends AbstractGenericEntity, D extends Abstr
         return this.getBridge().toDto(entities);
     }
 
-
-
     /**
      * Find all entities.
      *
@@ -158,7 +156,6 @@ public interface GenericService<T extends AbstractGenericEntity, D extends Abstr
 
         return this.findAll(pageable);
     }
-
 
     /**
      * Find all entities from the repository owned by user.
@@ -297,8 +294,6 @@ public interface GenericService<T extends AbstractGenericEntity, D extends Abstr
         owner.setId(ownerId);
         return this.findAllByOwner(page, size, null, owner);
     }
-
-
 
     /**
      * Find an entity through its primary key.

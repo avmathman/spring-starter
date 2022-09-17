@@ -82,12 +82,6 @@ public class UserController extends AbstractGenericController<User, UserDto> {
     }
 
     @Override
-    @GetMapping(value = CONTROLLER_PATH + "/{id}")
-    public UserDto getDataById(@PathVariable String id, WebRequest request, HttpServletResponse response) {
-        return super.getDataById(id, request, response);
-    }
-
-    @Override
     @GetMapping(value = CONTROLLER_PATH)
     public List<UserDto> getAllData(@RequestParam(value = SORT, defaultValue = DEFAULT_SORT_QUERY) String sort) {
         return super.getAllData(sort);
@@ -117,6 +111,13 @@ public class UserController extends AbstractGenericController<User, UserDto> {
     }
 
     @Override
+    @GetMapping(value = CONTROLLER_PATH + "/{id}")
+    public UserDto getDataById(@PathVariable String id, WebRequest request, HttpServletResponse response) {
+        return super.getDataById(id, request, response);
+    }
+
+    @Override
+    @PutMapping(value = CONTROLLER_PATH + "/{id}", consumes = "application/json")
     public ResponseEntity<UserDto> updateData(@PathVariable String id, @RequestBody UserDto dto) {
         // TODO If user does not have ROLES_LIST authority, forbid role update
         return super.updateData(id, dto);
@@ -137,7 +138,8 @@ public class UserController extends AbstractGenericController<User, UserDto> {
     @GetMapping(value = CONTROLLER_PATH + "/get")
     public ResponseEntity<UserDto> getUserByUsernameOrEmail(
             @RequestParam(required = false) String username,
-            @RequestParam(required = false) String email) {
+            @RequestParam(required = false) String email
+    ) {
         UserDto dto = null;
         HttpStatus status;
 
